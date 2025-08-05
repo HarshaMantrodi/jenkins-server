@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/HarshaMantrodi/jenkins-server.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t synology-ci-cd-nodejs-demo .'
+            }
+        }
+
+        stage('Remove Old Container') {
+            steps {
+                sh '''
+                docker stop synology-app || true
+                docker rm synology-app || true
+                '''
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                sh 'docker run -d --name synology-app -p 3000:3000 synology-ci-cd-nodejs-demo'
+            }
+        }
+    }
+}
