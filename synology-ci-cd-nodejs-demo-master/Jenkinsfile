@@ -4,29 +4,30 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/HarshaMantrodi/jenkins-server.git'
+                git branch: 'main', url: 'https://github.com/HarshaMantrodi/Jenkins-servers.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t synology-ci-cd-nodejs-demo .'
+                sh 'docker build -t jenkins-servers .'
             }
         }
 
         stage('Remove Old Container') {
             steps {
                 sh '''
-                docker stop synology-app || true
-                docker rm synology-app || true
+                docker stop jenkins-servers-app || true
+                docker rm jenkins-servers-app || true
                 '''
             }
         }
 
-        stage('Run Container') {
+        stage('Run New Container') {
             steps {
-                sh 'docker run -d --name synology-app -p 3000:3000 synology-ci-cd-nodejs-demo'
+                sh 'docker run -d --name jenkins-servers-app -p 3000:3000 jenkins-servers'
             }
         }
     }
 }
+
